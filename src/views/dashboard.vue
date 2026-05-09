@@ -66,7 +66,7 @@
       <div class="chart-row">
         <div class="chart-card">
           <div class="chart-body">
-            <div ref="emotionChartRef" style="width: 100%; height: 260px"></div>
+            <div ref="emotionChartRef" style="width: 100%; height: 320px"></div>
           </div>
         </div>
         <div class="chart-card">
@@ -85,7 +85,7 @@
                 <span class="txt">活跃用户</span>
               </div>
             </div>
-            <div ref="consultationChartRef" style="width: 100%; height: 220px"></div>
+            <div ref="consultationChartRef" style="width: 100%; height: 280px"></div>
           </div>
         </div>
       </div>

@@ -22,6 +22,10 @@ import Dashboard from '../views/dashboard.vue'
   height: 100vh;
   overflow: hidden;
 
+  :deep(.el-container) {
+    height: 100%;
+  }
+
   .sidebar-container {
     height: 100%;
   }

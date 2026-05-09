@@ -61,22 +61,28 @@
       class="detail-dialog"
     >
       <div class="session-detail">
-        <div class="detail-info">
-          <div class="info-item">
+        <div class="detail-header">
+          <div class="header-item">
+            <el-icon><User /></el-icon>
             <span class="label">用户：</span>
             <span class="value">{{ sessionDetail.userNickname }}</span>
           </div>
-          <div class="info-item">
+          <div class="header-item">
+            <el-icon><Clock /></el-icon>
             <span class="label">开始时间：</span>
             <span class="value">{{ sessionDetail.startedAt }}</span>
           </div>
-          <div class="info-item">
+          <div class="header-item">
+            <el-icon><ChatDotRound /></el-icon>
             <span class="label">消息数：</span>
-            <span class="value">{{ sessionDetail.messageCount }}</span>
+            <span class="value">{{ sessionDetail.messageCount }} 条</span>
           </div>
         </div>
         <div class="messages-box">
-          <h4>对话记录</h4>
+          <div class="box-header">
+            <el-icon><ChatLineSquare /></el-icon>
+            <span>对话记录</span>
+          </div>
           <div class="messages-list" v-loading="loadingMessage">
             <div
               v-for="message in sessionMessage"
@@ -86,8 +92,8 @@
             >
               <div class="msg-header">
                 <el-icon v-if="message.senderType === 1"><User /></el-icon>
-                <el-icon v-else><ChatDotRound /></el-icon>
-                <span>{{ message.senderType === 1 ? "用户" : "AI 助手" }}</span>
+                <el-icon v-else><MagicStick /></el-icon>
+                <span class="sender-name">{{ message.senderType === 1 ? "用户" : "AI 助手" }}</span>
                 <span class="msg-time">{{ message.createdAt }}</span>
               </div>
               <div class="msg-content">{{ message.content }}</div>
@@ -104,7 +110,7 @@
 <script setup>
 import { ref, onMounted, reactive } from "vue";
 import { getConsultationPage, getSessionDetail } from "@/api/admin.js";
-import { ChatDotRound, View, User } from "@element-plus/icons-vue";
+import { ChatDotRound, View, User, Clock, ChatLineSquare, MagicStick } from "@element-plus/icons-vue";
 // 表格数据
 const tableData = ref([]);
 //详情页转台
@@ -237,63 +243,88 @@ onMounted(() => {
 :deep(.detail-dialog) {
   .el-dialog__header {
     background: linear-gradient(135deg, #003366 0%, #004080 100%);
-    color: #fff;
+    padding: 16px 20px;
+    margin: 0;
     
     .el-dialog__title {
       color: #fff;
+      font-size: 18px;
+    }
+
+    .el-dialog__headerbtn {
+      top: 18px;
+      .el-dialog__close {
+        color: #fff;
+      }
     }
   }
 
   .session-detail {
-    .detail-info {
+    .detail-header {
       display: flex;
-      gap: 32px;
-      padding: 16px;
-      background: #f8f9fa;
-      border-radius: 8px;
+      gap: 24px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
+      border-radius: 10px;
       margin-bottom: 20px;
 
-      .info-item {
+      .header-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .el-icon {
+          color: #003366;
+          font-size: 16px;
+        }
+
         .label {
           font-weight: 500;
           color: #666;
         }
 
         .value {
-          color: #333;
+          color: #003366;
+          font-weight: 600;
         }
       }
     }
 
     .messages-box {
-      h4 {
-        margin: 0 0 12px;
+      .box-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         color: #003366;
         font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e8ecf1;
       }
 
       .messages-list {
         max-height: 400px;
         overflow-y: auto;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
+        border: 1px solid #e8ecf1;
+        border-radius: 10px;
         padding: 16px;
-        background: #fafafa;
+        background: #fafbfc;
 
         .message-item {
           margin-bottom: 12px;
-          padding: 12px;
-          border-radius: 8px;
+          padding: 14px;
+          border-radius: 10px;
           background: #fff;
-          border: 1px solid #e9ecef;
+          border: 1px solid #e8ecf1;
 
           &.user {
-            background: #e8f4fd;
+            background: linear-gradient(135deg, #e8f4fd 0%, #d4e9f7 100%);
             border-color: #bddbf5;
           }
 
           &.ai {
-            background: #f0f9f0;
+            background: linear-gradient(135deg, #f0f9f0 0%, #e1f3e1 100%);
             border-color: #cce8cc;
           }
 
@@ -301,21 +332,28 @@ onMounted(() => {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
-            font-weight: 500;
+            margin-bottom: 10px;
             color: #333;
+
+            .el-icon {
+              font-size: 16px;
+            }
+
+            .sender-name {
+              font-weight: 600;
+              color: #003366;
+            }
 
             .msg-time {
               margin-left: auto;
               font-size: 12px;
               color: #999;
-              font-weight: normal;
             }
           }
 
           .msg-content {
             color: #333;
-            line-height: 1.6;
+            line-height: 1.7;
             white-space: pre-wrap;
             font-size: 14px;
           }

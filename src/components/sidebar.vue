@@ -2,10 +2,12 @@
     <el-aside :width="isCollapsed ? '64px' : '264px'" class="sidebar-container">
         <div class="sidebar-header">
             <div class="brand" :class="{ 'collapsed': isCollapsed }">
-                <el-image :src="logo" class="brand-logo" />
+                <div class="brand-icon">
+                    <el-icon><School /></el-icon>
+                </div>
                 <div class="brand-info" v-show="!isCollapsed">
-                    <h1 class="brand-title">心理健康助手</h1>
-                    <p class="brand-subtitle">管理后台</p>
+                    <h1 class="brand-title">嘉应学院</h1>
+                    <p class="brand-subtitle">心理健康平台</p>
                 </div>
             </div>
         </div>
@@ -14,8 +16,8 @@
             class="sidebar-menu" 
             :collapse="isCollapsed" 
             :collapse-transition="false"
-            background-color="#001529"
-            text-color="#a6adb4"
+            background-color="#003366"
+            text-color="rgba(255,255,255,0.7)"
             active-text-color="#ffffff"
         >
             <el-menu-item 
@@ -42,7 +44,7 @@ const adminStore = useAdminStore()
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import logo from '@/assets/images/机器人.png'
+import { School } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -74,7 +76,7 @@ const isCollapsed = computed(() => adminStore.isCollapsed)
 
 <style scoped lang="scss">
 .sidebar-container {
-    height: 100vh;
+    height: 100%;
     background: linear-gradient(180deg, #001529 0%, #002140 100%);
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
     transition: width 0.3s ease;
@@ -95,12 +97,20 @@ const isCollapsed = computed(() => adminStore.isCollapsed)
                 justify-content: center;
             }
 
-            .brand-logo {
+            .brand-icon {
                 width: 40px;
                 height: 40px;
-                border-radius: 8px;
+                background: rgba(255,255,255,0.15);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 flex-shrink: 0;
-                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+
+                .el-icon {
+                    font-size: 24px;
+                    color: #fff;
+                }
             }
 
             .brand-info {
@@ -108,16 +118,17 @@ const isCollapsed = computed(() => adminStore.isCollapsed)
                 white-space: nowrap;
 
                 .brand-title {
-                    font-size: 16px;
-                    font-weight: 600;
+                    font-size: 18px;
+                    font-weight: 700;
                     color: #ffffff;
                     margin: 0;
                     line-height: 1.4;
+                    letter-spacing: 1px;
                 }
 
                 .brand-subtitle {
                     font-size: 12px;
-                    color: rgba(255, 255, 255, 0.6);
+                    color: rgba(255, 255, 255, 0.7);
                     margin: 4px 0 0 0;
                     line-height: 1.2;
                 }
@@ -139,7 +150,7 @@ const isCollapsed = computed(() => adminStore.isCollapsed)
             transition: all 0.3s ease;
 
             &:hover {
-                background-color: rgba(64, 158, 255, 0.15) !important;
+                background-color: rgba(255, 255, 255, 0.15) !important;
                 color: #ffffff !important;
 
                 .menu-icon {
@@ -148,9 +159,9 @@ const isCollapsed = computed(() => adminStore.isCollapsed)
             }
 
             &.is-active {
-                background: linear-gradient(90deg, #409eff 0%, #1890ff 100%) !important;
+                background: linear-gradient(90deg, #10b981 0%, #059669 100%) !important;
                 color: #ffffff !important;
-                box-shadow: 0 2px 8px rgba(64, 158, 255, 0.4);
+                box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
 
                 .menu-icon {
                     color: #ffffff;
@@ -171,7 +182,6 @@ const isCollapsed = computed(() => adminStore.isCollapsed)
     }
 }
 
-// 折叠状态下的样式调整
 :deep(.el-menu--collapse) {
     .menu-item {
         padding: 0 20px !important;

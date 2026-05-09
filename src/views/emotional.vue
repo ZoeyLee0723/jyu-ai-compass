@@ -3,11 +3,19 @@
     <!-- 页面头部 -->
     <div class="page-header">
       <div class="header-left">
-        <el-icon class="header-icon"><Notebook /></el-icon>
+        <div class="header-icon">
+          <el-icon><Reading /></el-icon>
+        </div>
         <div class="header-text">
           <h2>情绪日志管理</h2>
-          <p>查看用户情绪日志及 AI 分析结果</p>
+          <p>嘉应学院心理健康平台 · 情绪日志查看</p>
         </div>
+      </div>
+      <div class="header-right">
+        <el-button text @click="handleSearch">
+          <el-icon><Refresh /></el-icon>
+          刷新
+        </el-button>
       </div>
     </div>
 
@@ -44,9 +52,18 @@
         </el-table-column>
         <el-table-column prop="userId" label="用户ID" width="80" />
         <el-table-column prop="diaryDate" label="记录日期" width="120" />
-        <el-table-column label="情绪评分" width="140">
+        <el-table-column label="情绪评分" width="120">
           <template #default="scope">
-            <el-rate v-model="scope.row.moodScore" :max="10" disabled :show-score="true" score-template="{value}" />
+            <div class="emotion-score">
+              <el-rate 
+                v-model="scope.row.moodScore" 
+                :max="10" 
+                disabled 
+                :show-score="false"
+                :allow-half="false"
+              />
+              <span class="score-text">{{ scope.row.moodScore }}分</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="生活指标" width="100">
@@ -59,16 +76,16 @@
         </el-table-column>
         <el-table-column prop="emotionTriggers" label="触发因素" width="120" show-overflow-tooltip />
         <el-table-column prop="diaryContent" label="日志内容" show-overflow-tooltip />
-        <el-table-column label="操作" width="140" fixed="right">
+        <el-table-column label="操作" width="120" fixed="right">
           <template #default="scope">
-            <el-button text type="primary" @click="viewSessionDetail(scope.row)">
-              <el-icon><View /></el-icon>
-              详情
-            </el-button>
-            <el-button text type="danger" @click="handleDelete(scope.row)">
-              <el-icon><Delete /></el-icon>
-              删除
-            </el-button>
+            <div class="action-btns">
+              <el-button text type="primary" size="small" @click="viewSessionDetail(scope.row)">
+                详情
+              </el-button>
+              <el-button text type="danger" size="small" @click="handleDelete(scope.row)">
+                删除
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -190,7 +207,7 @@ import { getEmotionalPage } from "@/api/admin";
 import { ref, reactive, onMounted } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { deleteEmotional } from "@/api/admin";
-import { Notebook, Search, View, Delete, User, Sunny, Document, DataAnalysis, Clock } from "@element-plus/icons-vue";
+import { Reading, Search, View, Delete, User, Sunny, Document, DataAnalysis, Clock, Refresh } from "@element-plus/icons-vue";
 
 const searchForm = reactive({
   userId: '',
@@ -326,67 +343,198 @@ onMounted(() => {
 });
 </script>
 <style scoped lang="scss">
-/* 详情页样式 */
-.detail-section {
-  margin-bottom: 24px;
+.emotional-page {
+  padding: 24px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7fa 0%, #e8ecf1 100%);
 
-  h4 {
-    margin: 0 0 16px 0;
-    color: #303133;
-    font-size: 16px;
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #003366 0%, #004080 100%);
+    border-radius: 12px;
+    color: #fff;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .header-icon {
+        font-size: 32px;
+        opacity: 0.9;
+      }
+
+      .header-text {
+        h2 {
+          margin: 0 0 4px;
+          font-size: 20px;
+          font-weight: 600;
+        }
+
+        p {
+          margin: 0;
+          font-size: 13px;
+          opacity: 0.8;
+        }
+      }
+    }
+
+    .header-right {
+      :deep(.el-button) {
+        color: #fff;
+        
+        &:hover {
+          background: rgba(255,255,255,0.15);
+        }
+      }
+    }
+  }
+
+  .search-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .table-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 20px;
+
+    .action-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .emotion-score {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+
+      :deep(.el-rate) {
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 80px;
+
+        .el-rate__item {
+          font-size: 10px;
+          padding: 0 1px;
+        }
+
+        .el-rate__icon {
+          font-size: 10px !important;
+          margin-right: 0;
+        }
+      }
+
+      .score-text {
+        font-size: 11px;
+        color: #666;
+        margin-top: 2px;
+      }
+    }
+
+    .life-indicators {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .pagination-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #f0f0f0;
+    }
   }
 }
 
-/* 分页样式 */
-.el-pagination {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
-}
+:deep(.detail-dialog) {
+  .el-dialog__header {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    padding: 16px 20px;
+    margin: 0;
+    
+    .el-dialog__title {
+      color: #fff;
+      font-size: 18px;
+    }
 
-/* 表格样式 */
-.el-table {
-  margin-top: 25px !important;
-}
+    .el-dialog__headerbtn {
+      top: 18px;
+      .el-dialog__close {
+        color: #fff;
+      }
+    }
+  }
 
-/* 按钮样式 */
-.el-button {
-  margin-right: 8px;
-}
+  .detail-content {
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 8px;
 
-/* 描述列表样式 */
-.el-descriptions {
-  margin-bottom: 16px;
-}
+    .detail-section {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: #fafbfc;
+      border-radius: 10px;
 
-/* 标签样式 */
-.el-tag {
-  margin-right: 8px;
-}
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #10b981;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e8f5e9;
+      }
 
-/* 进度条样式 */
-.el-progress {
-  width: 100%;
-}
+      :deep(.el-descriptions) {
+        background: #fff;
+        border-radius: 8px;
+        padding: 12px;
+      }
 
-/* 建议内容样式 */
-.suggestion-content {
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 4px;
-  padding: 12px;
-  margin-top: 8px;
-  line-height: 1.6;
-  color: #495057;
-}
+      .suggestion-box {
+        background: linear-gradient(135deg, #f0f9f0 0%, #e8f5e9 100%);
+        border: 1px solid #cce8cc;
+        border-radius: 10px;
+        padding: 16px;
+        color: #333;
+        line-height: 1.7;
+      }
 
-/* 列表样式 */
-.suggestion-content ul {
-  margin: 0;
-  padding-left: 20px;
-}
+      .suggestion-list {
+        margin: 0;
+        padding-left: 20px;
+        background: linear-gradient(135deg, #f0f9f0 0%, #e8f5e9 100%);
+        border: 1px solid #cce8cc;
+        border-radius: 10px;
+        padding: 16px;
 
-.suggestion-content li {
-  margin-bottom: 6px;
+        li {
+          margin-bottom: 10px;
+          color: #333;
+          line-height: 1.6;
+        }
+      }
+    }
+  }
 }
 </style>

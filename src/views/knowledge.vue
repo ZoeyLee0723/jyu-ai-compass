@@ -4,7 +4,10 @@
     <div class="page-header">
       <div class="header-left">
         <el-icon class="header-icon"><Document /></el-icon>
-        <h2>知识文章管理</h2>
+        <div class="header-text">
+          <h2>知识文章管理</h2>
+          <p>嘉应学院心理健康平台 · 文章发布与管理</p>
+        </div>
       </div>
       <el-button type="primary" @click="handleEdit({})">
         <el-icon><Plus /></el-icon>
@@ -52,7 +55,7 @@
     <!-- 数据表格 -->
     <div class="table-container">
       <el-table :data="tableData" stripe>
-        <el-table-column label="文章标题" min-width="200">
+        <el-table-column label="文章标题">
           <template #default="scope">
             <span class="article-title">{{ scope.row.title }}</span>
           </template>
@@ -288,41 +291,59 @@ const handleDelete = (row) =>{
 
 <style lang="scss" scoped>
 .knowledge-page {
-  padding: 20px;
+  padding: 24px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7fa 0%, #e8ecf1 100%);
 
-  // 页面头部
   .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     padding: 20px 24px;
-    background: white;
+    background: linear-gradient(135deg, #003366 0%, #004080 100%);
     border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    color: #fff;
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
 
       .header-icon {
-        font-size: 24px;
-        color: #003366;
+        font-size: 28px;
+        opacity: 0.9;
       }
 
-      h2 {
-        font-size: 20px;
-        font-weight: 600;
-        color: #1f2937;
-        margin: 0;
+      .header-text {
+        h2 {
+          margin: 0 0 4px;
+          font-size: 20px;
+          font-weight: 600;
+        }
+
+        p {
+          margin: 0;
+          font-size: 13px;
+          opacity: 0.8;
+        }
+      }
+    }
+
+    :deep(.el-button) {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.3);
+      color: #fff;
+      
+      &:hover {
+        background: rgba(255,255,255,0.3);
+        border-color: rgba(255,255,255,0.4);
       }
     }
   }
 
-  // 搜索区域
   .search-section {
-    background: white;
+    background: #fff;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 16px;
@@ -343,9 +364,8 @@ const handleDelete = (row) =>{
     }
   }
 
-  // 表格容器
   .table-container {
-    background: white;
+    background: #fff;
     border-radius: 12px;
     padding: 16px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -371,7 +391,6 @@ const handleDelete = (row) =>{
     }
   }
 
-  // 分页
   .pagination-container {
     display: flex;
     justify-content: flex-end;

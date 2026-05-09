@@ -2,106 +2,127 @@
   <el-dialog
     :title="isEdit ? '编辑文章' : '新增文章'"
     v-model="dialogVisble"
-    width="50%"
+    width="55%"
+    class="aticle-dialog"
     @close="handleClose"
   >
-    <el-form :model="formData" :rules="rules" ref="formRef">
-      <el-form-item label="文章标题" prop="title">
-        <el-input
-          v-model="formData.title"
-          placeholder="请输入文章标题"
-          maxlength="200"
-          show-word-limit
-          clearable
-        >
-        </el-input>
-      </el-form-item>
-      <el-form-item label="文章分类" prop="categoryId">
-        <el-select
-          v-model="formData.categoryId"
-          placeholder="请选择文章分类"
-          clearable
-        >
-          <el-option
-            v-for="item in props.catagories"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="文章摘要" prop="summary">
-        <el-input
-          type="textarea"
-          v-model="formData.summary"
-          placeholder="请输入文章摘要"
-          maxlength="1000"
-          show-word-limit
-          :rows="4"
-        >
-        </el-input>
-      </el-form-item>
-      <el-form-item label="标签" prop="tags">
-        <el-select
-          v-model="formData.tags"
-          placeholder="请选择或输入文章标签"
-          multiple
-          clearable
-          filterable
-          allow-create
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in commonTags"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="封面图片" prop="coverImage">
-        <div class="cover-upload">
-          <el-upload
-            class="avatar-uploader"
-            action=""
-            :before-upload="beforeUpload"
-            :http-request="handleUploadRequest"
-            :show-file-list="false"
-            accept="image/*"
-          >
-            <div class="cover-placeholder" v-if="!imgUrl">
-              <p>点击上传封面图片</p>
-            </div>
-            <img v-else :src="imgUrl" alt="封面图片" class="cover-image" />
-          </el-upload>
-          <div v-if="imgUrl">
-            <el-button type="danger" @click="removeImage">删除图片</el-button>
-          </div>
+    <div class="dialog-content">
+      <el-form :model="formData" :rules="rules" ref="formRef" label-position="top">
+        <div class="form-row">
+          <el-form-item label="文章标题" prop="title" class="form-item-full">
+            <el-input
+              v-model="formData.title"
+              placeholder="请输入文章标题"
+              maxlength="200"
+              show-word-limit
+              clearable
+            />
+          </el-form-item>
         </div>
-      </el-form-item>
-      <el-form-item label="文章内容" prop="content">
-        <RichTextEditor
-          v-model="formData.content"
-          placeholder="请输入文章内容"
-          :maxCharCount="2000"
-          @change="handleContentChange"
-          @created="handleEditorCreated"
-          :minHeight="editorMinHeight"
-        />
-      </el-form-item>
-    </el-form>
-    <div v-if="btnPreview" class="preview-content">
-      <h3>预览效果</h3>
-      <div v-html="formData.content"></div>
+        <div class="form-row two-cols">
+          <el-form-item label="文章分类" prop="categoryId" class="form-item">
+            <el-select
+              v-model="formData.categoryId"
+              placeholder="请选择文章分类"
+              clearable
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in props.catagories"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="标签" prop="tags" class="form-item">
+            <el-select
+              v-model="formData.tags"
+              placeholder="请选择或输入文章标签"
+              multiple
+              clearable
+              filterable
+              allow-create
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in commonTags"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </div>
+        <el-form-item label="文章摘要" prop="summary">
+          <el-input
+            type="textarea"
+            v-model="formData.summary"
+            placeholder="请输入文章摘要"
+            maxlength="1000"
+            show-word-limit
+            :rows="3"
+          />
+        </el-form-item>
+        <el-form-item label="封面图片" prop="coverImage">
+          <div class="cover-upload">
+            <el-upload
+              class="avatar-uploader"
+              action=""
+              :before-upload="beforeUpload"
+              :http-request="handleUploadRequest"
+              :show-file-list="false"
+              accept="image/*"
+            >
+              <div class="cover-placeholder" v-if="!imgUrl">
+                <el-icon class="upload-icon"><Upload /></el-icon>
+                <p>点击上传封面</p>
+                <span>建议尺寸 800x400</span>
+              </div>
+              <div v-else class="cover-preview">
+                <img :src="imgUrl" alt="封面图片" />
+                <div class="cover-overlay">
+                  <el-icon><Plus /></el-icon>
+                </div>
+              </div>
+            </el-upload>
+            <el-button v-if="imgUrl" type="danger" size="small" @click="removeImage">
+              <el-icon><Delete /></el-icon>
+              删除图片
+            </el-button>
+          </div>
+        </el-form-item>
+        <el-form-item label="文章内容" prop="content">
+          <RichTextEditor
+            v-model="formData.content"
+            placeholder="请输入文章内容"
+            :maxCharCount="2000"
+            @change="handleContentChange"
+            @created="handleEditorCreated"
+            :minHeight="editorMinHeight"
+          />
+        </el-form-item>
+      </el-form>
+      <div v-if="btnPreview" class="preview-section">
+        <div class="preview-header">
+          <el-icon><View /></el-icon>
+          <span>预览效果</span>
+        </div>
+        <div class="preview-content" v-html="formData.content"></div>
+      </div>
     </div>
     <template #footer>
-      <el-button type="primary" @click="btnPreview = !btnPreview">
-        {{ btnPreview ? "关闭预览" : "预览效果" }}</el-button
-      >
-      <el-button type="primary" @click="handleSubmit" :loading="loading"
-        >{{ isEdit ? "编辑" : "新增" }}文章</el-button
-      >
-      <el-button @click="handleClose">取消</el-button>
+      <div class="dialog-footer">
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="btnPreview = !btnPreview">
+          <el-icon><View /></el-icon>
+          {{ btnPreview ? "关闭预览" : "预览" }}
+        </el-button>
+        <el-button type="primary" @click="handleSubmit" :loading="loading">
+          <el-icon><Check /></el-icon>
+          {{ isEdit ? "保存修改" : "发布文章" }}
+        </el-button>
+      </div>
     </template>
   </el-dialog>
 </template>
@@ -112,6 +133,7 @@ import { ElMessage } from "element-plus";
 import { uploadFile, createArticle, updateArticle } from "@/api/admin";
 import { fileBaseURL } from "@/config/index";
 import RichTextEditor from "@/components/RichTextEditor.vue";
+import { Upload, Delete, View, Check, Plus } from "@element-plus/icons-vue";
 
 const props = defineProps({
   visible: {
@@ -291,19 +313,171 @@ const handleSubmit = async function () {
 </script>
 
 <style scoped lang="scss">
-.cover-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 200px;
-  height: 120px;
-  border: 1px dashed #ccc;
-  border-radius: 5px;
-}
+:deep(.aticle-dialog) {
+  .el-dialog__header {
+    background: linear-gradient(135deg, #003366 0%, #004080 100%);
+    padding: 16px 20px;
+    margin: 0;
+    
+    .el-dialog__title {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+    }
 
-.cover-image {
-  width: 200px;
-  height: 120px;
-  display: block;
+    .el-dialog__headerbtn {
+      top: 16px;
+
+      .el-dialog__close {
+        color: #fff;
+      }
+    }
+  }
+
+  .el-dialog__body {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .dialog-content {
+    .form-row {
+      margin-bottom: 16px;
+
+      &.two-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+    }
+
+    .el-form-item {
+      margin-bottom: 16px;
+
+      .el-form-item__label {
+        font-weight: 500;
+        color: #333;
+      }
+    }
+
+    .cover-upload {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .avatar-uploader {
+        .cover-placeholder {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 200px;
+          height: 120px;
+          border: 2px dashed #d0dbe7;
+          border-radius: 8px;
+          background: #f8fafc;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &:hover {
+            border-color: #003366;
+            background: #f0f4f8;
+          }
+
+          .upload-icon {
+            font-size: 32px;
+            color: #999;
+            margin-bottom: 8px;
+          }
+
+          p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+          }
+
+          span {
+            font-size: 12px;
+            color: #999;
+          }
+        }
+
+        .cover-preview {
+          position: relative;
+          width: 200px;
+          height: 120px;
+          border-radius: 8px;
+          overflow: hidden;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .cover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+
+            .el-icon {
+              font-size: 24px;
+              color: #fff;
+            }
+          }
+
+          &:hover .cover-overlay {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    .preview-section {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e8ecf1;
+
+      .preview-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #003366;
+        font-weight: 600;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e8ecf1;
+      }
+
+      .preview-content {
+        padding: 16px;
+        background: #fff;
+        border-radius: 6px;
+        min-height: 100px;
+      }
+    }
+  }
+
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .el-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  }
 }
 </style>
