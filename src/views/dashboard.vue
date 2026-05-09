@@ -1,162 +1,114 @@
 <template>
-  <div class="dashboard-container">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <el-card v-if="aiData.systemOverview">
-          <div class="card-content">
-            <div class="avatar users">
-              <el-image
-                :src="users"
-                alt="用户头像"
-                style="width: 40px; height: 40px"
-              />
-            </div>
-            <div class="info">
-              <p class="title">用户总数</p>
-              <p class="value">{{ aiData.systemOverview.totalUsers }}</p>
-              <p class="subtitle-title">
-                活跃用户数:
-                {{ aiData.systemOverview.activeUsers }}
-              </p>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card v-if="aiData.systemOverview">
-          <div class="card-content">
-            <div class="avatar like">
-              <el-image
-                :src="like"
-                alt="情绪日志"
-                style="width: 40px; height: 40px"
-              />
-            </div>
-            <div class="info">
-              <p class="title">情绪日志</p>
-              <p class="value">{{ aiData.systemOverview.totalDiaries }}</p>
-              <p class="subtitle-title">
-                今日新增:
-                {{ aiData.systemOverview.todayNewDiaries }}
-              </p>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card v-if="aiData.systemOverview">
-          <div class="card-content">
-            <div class="avatar comments">
-              <el-image
-                :src="comments"
-                alt="咨询会话"
-                style="width: 40px; height: 40px"
-              />
-            </div>
-            <div class="info">
-              <p class="title">咨询会话</p>
-              <p class="value">{{ aiData.systemOverview.totalSessions }}</p>
-              <p class="subtitle-title">
-                今日新增：
-                {{ aiData.systemOverview.totalNewSessions }}
-              </p>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card v-if="aiData.systemOverview">
-          <div class="card-content">
-            <div class="avatar smile">
-              <el-image
-                :src="smile"
-                alt="平均情绪"
-                style="width: 40px; height: 40px"
-              />
-            </div>
-            <div class="info">
-              <p class="title">平均情绪</p>
-              <p class="value">{{ aiData.systemOverview.avgMoodScore }}/10</p>
-              <p class="subtitle-title">情绪健康指数</p>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20" style="margin-top: 20px">
-      <el-col :span="12">
-        <el-card style="width: 100%">
-          <template #header>
-            <div class="card-header">情绪趋势分析</div>
-          </template>
-          <div class="chart-content">
-            <div ref="emotionChartRef" style="height: 300px; width: 100%"></div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card style="width: 100%">
-          <template #header>
-            <div class="card-header">咨询会话统计</div>
-          </template>
-          <div class="chart-content">
-            <div class="consultation-stats" v-if="aiData.consultationStats">
-              <div class="stat-item">
-                <div class="stat-label">总会话数</div>
-                <div class="stat-value">
-                  {{ aiData.consultationStats.totalSessions }}
-                </div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-label">平均时长</div>
-                <div class="stat-value">
-                  {{ aiData.consultationStats.avgDurationMinutes }}
-                </div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-label">活跃用户</div>
-                <div class="stat-value">
-                  {{ aiData.systemOverview.activeUsers }}
-                </div>
-              </div>
-            </div>
-            <div
-              ref="consultationChartRef"
-              style="height: 260px; width: 100%"
-            ></div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row style="margin-top: 20px">
-      <el-card style="width: 100%">
-        <template #header>
-          <div class="card-header">用户活跃度趋势</div>
-        </template>
-        <div class="chart-content">  
-          <div
-            ref="userActivityChartRef"
-            style="height: 300px; width: 100%"
-          ></div>
+  <div class="dashboard-page">
+    <!-- 页面头部 -->
+    <div class="page-header">
+      <div class="header-left">
+        <el-icon class="header-icon"><DataAnalysis /></el-icon>
+        <div class="header-text">
+          <h2>数据概览</h2>
+          <p>欢迎回来，查看平台实时数据统计</p>
         </div>
-      </el-card>
-    </el-row>
+      </div>
+      <div class="header-right">
+        <el-button text @click="refreshData">
+          <el-icon><Refresh /></el-icon>
+          刷新数据
+        </el-button>
+      </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-cards">
+      <div class="stat-card" v-if="aiData.systemOverview">
+        <div class="stat-icon users">
+          <el-icon><User /></el-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">用户总数</span>
+          <span class="stat-value">{{ aiData.systemOverview.totalUsers }}</span>
+          <span class="stat-extra">活跃 {{ aiData.systemOverview.activeUsers }} 人</span>
+        </div>
+      </div>
+      <div class="stat-card" v-if="aiData.systemOverview">
+        <div class="stat-icon diaries">
+          <el-icon><Notebook /></el-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">情绪日志</span>
+          <span class="stat-value">{{ aiData.systemOverview.totalDiaries }}</span>
+          <span class="stat-extra">今日 +{{ aiData.systemOverview.todayNewDiaries }}</span>
+        </div>
+      </div>
+      <div class="stat-card" v-if="aiData.systemOverview">
+        <div class="stat-icon sessions">
+          <el-icon><ChatDotRound /></el-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">咨询会话</span>
+          <span class="stat-value">{{ aiData.systemOverview.totalSessions }}</span>
+          <span class="stat-extra">今日 +{{ aiData.systemOverview.totalNewSessions }}</span>
+        </div>
+      </div>
+      <div class="stat-card" v-if="aiData.systemOverview">
+        <div class="stat-icon mood">
+          <el-icon><Sunny /></el-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">平均情绪</span>
+          <span class="stat-value">{{ aiData.systemOverview.avgMoodScore }}</span>
+          <span class="stat-extra">满分 10 分</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 图表区域 -->
+    <div class="charts-section">
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-body">
+            <div ref="emotionChartRef" style="width: 100%; height: 260px"></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-body">
+            <div class="mini-stats" v-if="aiData.consultationStats">
+              <div class="mini-stat">
+                <span class="num">{{ aiData.consultationStats.totalSessions }}</span>
+                <span class="txt">总会话数</span>
+              </div>
+              <div class="mini-stat">
+                <span class="num">{{ aiData.consultationStats.avgDurationMinutes }}</span>
+                <span class="txt">平均时长(分)</span>
+              </div>
+              <div class="mini-stat">
+                <span class="num">{{ aiData.systemOverview.activeUsers }}</span>
+                <span class="txt">活跃用户</span>
+              </div>
+            </div>
+            <div ref="consultationChartRef" style="width: 100%; height: 220px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card full-width">
+        <div class="chart-body">
+          <div ref="userActivityChartRef" style="width: 100%; height: 350px"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script setup>
 import { getAnalyticsOverview } from "@/api/admin";
-import { ref, onMounted, reactive } from "vue";
-import users from "@/assets/images/users.png";
-import like from "@/assets/images/like.png";
-import comments from "@/assets/images/comments.png";
-import smile from "@/assets/images/smile.png";
+import { ref, onMounted, nextTick } from "vue";
+import { DataAnalysis, Refresh, User, Notebook, ChatDotRound, Sunny } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
 
-//初始化图标
 const initChart = () => {
-  initEmotionChart();
-  initConsultationChart();
-  initUserActivityChart();
+  nextTick(() => {
+    initEmotionChart();
+    initConsultationChart();
+    initUserActivityChart();
+  });
 };
 //数据定义
 const aiData = ref({});
@@ -552,116 +504,216 @@ const initUserActivityChart = () => {
   //渲染图表
   userActivityChart.setOption(option);
 };
-onMounted(() => {
+
+const refreshData = () => {
   getAnalyticsOverview()
     .then((res) => {
-      console.log("1res", res);
       aiData.value = res;
-      //数据加载完成后初始化图表
       initChart();
     })
     .catch((error) => {
       console.error("获取分析数据失败:", error);
-      //即使数据加载失败也初始化图表（显示空图表）
+    });
+};
+
+onMounted(() => {
+  getAnalyticsOverview()
+    .then((res) => {
+      aiData.value = res;
+      initChart();
+    })
+    .catch((error) => {
+      console.error("获取分析数据失败:", error);
       initChart();
     });
 });
 </script>
 <style scoped lang="scss">
-.dashboard-container {
-  padding: 20px;
+.dashboard-page {
+  padding: 24px 24px 40px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7fa 0%, #e8ecf1 100%);
 
-  .card-content {
+  .page-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #003366 0%, #004080 100%);
+    border-radius: 12px;
+    color: #fff;
 
-    .avatar {
-      margin-right: 12px;
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
+    .header-left {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 16px;
 
-      &.users {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      .header-icon {
+        font-size: 36px;
+        opacity: 0.9;
       }
 
-      &.like {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      }
+      .header-text {
+        h2 {
+          margin: 0 0 4px;
+          font-size: 20px;
+          font-weight: 600;
+        }
 
-      &.comments {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      }
-
-      &.smile {
-        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        p {
+          margin: 0;
+          font-size: 13px;
+          opacity: 0.8;
+        }
       }
     }
 
-    .info {
-      .title {
-        font-size: 14px;
-        color: #7f8c8d;
-        margin-bottom: 4px;
-      }
-
-      .value {
-        font-size: 24px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 4px;
-      }
-
-      .subtitle-title {
-        font-size: 12px;
-        color: #95a5a6;
+    .header-right {
+      :deep(.el-button) {
+        color: #fff;
+        
+        &:hover {
+          background: rgba(255,255,255,0.15);
+        }
       }
     }
   }
 
-  .el-card {
-    margin-bottom: 20px;
-  }
+  .stats-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
 
-  .card-header {
-    font-size: 16px;
-    font-weight: 600;
-    color: #2c3e50;
-  }
-
-  .chart-content {
-    padding: 20px;
-    height: 300px;
-    position: relative;
-
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
-    }
-
-    .consultation-stats {
+    .stat-card {
       display: flex;
-      justify-content: space-around;
-      margin-bottom: 20px;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
 
-      .stat-item {
-        text-align: center;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      }
+
+      .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #fff;
+
+        &.users {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        &.diaries {
+          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        &.sessions {
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        &.mood {
+          background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+      }
+
+      .stat-info {
+        display: flex;
+        flex-direction: column;
 
         .stat-label {
-          font-size: 12px;
+          font-size: 13px;
           color: #7f8c8d;
-          margin-bottom: 4px;
         }
 
         .stat-value {
-          font-size: 18px;
-          font-weight: 600;
+          font-size: 26px;
+          font-weight: 700;
           color: #2c3e50;
         }
+
+        .stat-extra {
+          font-size: 12px;
+          color: #95a5a6;
+        }
       }
+    }
+  }
+
+  .charts-section {
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .chart-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      overflow: hidden;
+
+      &.full-width {
+        margin-bottom: 0;
+      }
+
+      .chart-body {
+        padding: 16px;
+
+        .mini-stats {
+          display: flex;
+          justify-content: space-around;
+          padding: 12px 0;
+          margin-bottom: 12px;
+          border-bottom: 1px solid #f5f5f5;
+
+          .mini-stat {
+            text-align: center;
+
+            .num {
+              display: block;
+              font-size: 22px;
+              font-weight: 700;
+              color: #003366;
+            }
+
+            .txt {
+              font-size: 12px;
+              color: #7f8c8d;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .stats-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-page {
+    .stats-cards {
+      grid-template-columns: 1fr !important;
+    }
+
+    .charts-section .chart-row {
+      grid-template-columns: 1fr !important;
     }
   }
 }

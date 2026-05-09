@@ -1,6 +1,6 @@
 <template>
   <div class="frontend-layout">
-    <div class="navbar-container">
+    <!-- <div class="navbar-container">
       <div class="brand-section">
         <el-image
           :src="robot"
@@ -31,15 +31,15 @@
           </router-link>
         </template>
       </div>
-    </div>
+    </div> -->
     <div class="main-container">
       <router-view></router-view>
     </div>
-    <div class="footer-container">
+    <!-- <div class="footer-container">
       <div class="footer-bottom">
         <p>李宗奕制作</p>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -47,19 +47,19 @@
 import { ref, onMounted } from "vue";
 import robot from "@/assets/images/机器人.png";
 import { logout } from "@/api/admin.js";
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { useRouter } from "vue-router";
+const router = useRouter();
 //登录逻辑变量
 const isLoggedIn = ref(false);
 //退出登录
 const handleLogout = () => {
   logout().then(() => {
     // 退出登录成功，跳转到登录页
-    localStorage.removeItem('token')
-    localStorage.removeItem('userInfo')
-    router.push('/author/login')
-  })
-}
+    localStorage.removeItem("token");
+    localStorage.removeItem("userInfo");
+    router.push("/author/login");
+  });
+};
 
 onMounted(() => {
   // 检查本地存储是否有 token
